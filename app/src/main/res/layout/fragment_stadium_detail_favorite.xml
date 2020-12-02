@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fillViewport="true"
+    tools:context=".fragment.StadiumDetailFavoriteFragment">
+
+    <LinearLayout
+        android:id="@+id/stadium_layout_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/stadium_layout_favorite_2"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@color/colorAccent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_stadium_detail_favorite"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:layout_height="160dp"
+                android:src="@drawable/icon" />
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_stadium_name_detail_favorite"
+                android:text="Arsenal"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:fontFamily="@font/coolvetica"
+                android:layout_below="@id/img_stadium_detail_favorite"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_stadium_location_detail_favorite"
+                android:text="England"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:fontFamily="@font/coolvetica"
+                android:layout_below="@id/tv_stadium_name_detail_favorite"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white"
+                android:textSize="25sp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_layout">
+
+            <TextView
+                android:id="@+id/tv_stadium_description_detail_favorite"
+                android:layout_margin="30dp"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                android:text="Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

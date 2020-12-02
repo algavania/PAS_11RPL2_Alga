@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fillViewport="true"
+    tools:context=".fragment.TeamDetailFavoriteFragment">
+
+    <LinearLayout
+        android:id="@+id/team_layout_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/team_layout_favorite_2"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@color/colorAccent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_team_detail_favorite"
+                android:layout_width="140dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:layout_height="140dp"
+                android:src="@drawable/icon" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_team_name_detail_favorite"
+                android:text="Arsenal"
+                android:fontFamily="@font/coolvetica"
+                android:layout_below="@id/img_team_detail_favorite"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:textSize="25sp"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_team_year_detail_favorite"
+                android:text="Since 1980"
+                android:fontFamily="@font/coolvetica"
+                android:layout_below="@id/tv_team_name_detail_favorite"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_team_stadium_detail_favorite"
+                android:text="Emirates Stadium"
+                android:fontFamily="@font/coolvetica"
+                android:layout_below="@id/tv_team_year_detail_favorite"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:gravity="center_horizontal"
+                android:textAlignment="center" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_layout">
+
+            <TextView
+                android:id="@+id/tv_team_description_detail_favorite"
+                android:layout_margin="30dp"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                android:text="Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

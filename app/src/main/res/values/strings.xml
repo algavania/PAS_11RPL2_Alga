@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">EPL</string>
+    <string name="facebook_app_id">212361813667423</string>
+    <string name="fb_login_protocol_scheme">fb212361813667423</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="tab_text_1">Team</string>
+    <string name="tab_text_2">Stadium</string>
+    <string name="title_activity_favorite_detail">FavoriteDetailActivity</string>
+</resources>
