@@ -1,7 +1,7 @@
 package com.practice.myapplication.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
-import androidx.palette.graphics.Palette;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -119,9 +118,5 @@ public class DetailActivity extends AppCompatActivity {
         intent.putExtra("isFavorite", isFavorite);
         setResult(RESULT_CODE, intent);
         super.onBackPressed();
-    }
-
-    public Palette createPaletteSync(Bitmap bitmap) {
-        return Palette.from(bitmap).generate();
     }
 }

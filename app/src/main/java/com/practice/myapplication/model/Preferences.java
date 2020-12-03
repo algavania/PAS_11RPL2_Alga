@@ -19,4 +19,16 @@ public class Preferences {
         editor.putBoolean("status", login);
         editor.apply();
     }
+
+    public int getDominantColor(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCE, Context.MODE_PRIVATE);
+        return preferences.getInt("color", 0);
+    }
+
+    public void setDominantColor(Context context, int color) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCE, Context.MODE_PRIVATE);
+        editor = preferences.edit();
+        editor.putInt("color", color);
+        editor.apply();
+    }
 }

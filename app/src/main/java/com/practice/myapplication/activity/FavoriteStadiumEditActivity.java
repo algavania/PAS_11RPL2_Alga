@@ -8,7 +8,9 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.practice.myapplication.R;
 import com.practice.myapplication.RealmHelper;
+import com.practice.myapplication.model.Preferences;
 
 import java.util.List;
 
@@ -54,6 +57,8 @@ public class FavoriteStadiumEditActivity extends AppCompatActivity implements Ea
     StorageReference storageReference;
     StorageReference fileReference;
 
+    Preferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,12 @@ public class FavoriteStadiumEditActivity extends AppCompatActivity implements Ea
         final String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
         if (!EasyPermissions.hasPermissions(this, permissions)) {
             EasyPermissions.requestPermissions(this, "Grant the permission to fully access this apps", 10, permissions);
+        }
+
+        preferences = new Preferences();
+        if (preferences.getDominantColor(getApplicationContext()) != 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(preferences.getDominantColor(getApplicationContext()));
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(preferences.getDominantColor(getApplicationContext())));
         }
 
         Realm.init(this);

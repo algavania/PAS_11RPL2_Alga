@@ -4,8 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.practice.myapplication.R;
@@ -19,6 +22,10 @@ public class HomeActivity extends AppCompatActivity {
     Bundle extras;
     Boolean fromFavorite, fromProfile;
 
+    long backPressedTime;
+    Toast backToast;
+
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +33,10 @@ public class HomeActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setShowHideAnimationEnabled(false);
+        }
 
         extras = getIntent().getExtras();
         if (extras != null) {
@@ -62,4 +73,15 @@ public class HomeActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onBackPressed() {
+        if (backPressedTime + 3000 > System.currentTimeMillis()) {
+            backToast.cancel();
+            super.onBackPressed();
+        } else {
+            backToast = Toast.makeText(getApplicationContext(), "Pressed once again to exit", Toast.LENGTH_SHORT);
+            backToast.show();
+        }
+        backPressedTime = System.currentTimeMillis();
+    }
 }

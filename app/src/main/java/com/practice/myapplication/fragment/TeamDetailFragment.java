@@ -27,6 +27,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.practice.myapplication.R;
+import com.practice.myapplication.model.Preferences;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -145,10 +146,13 @@ public class TeamDetailFragment extends Fragment {
                               @Override
                               public boolean onResourceReady(Bitmap bitmap, Object o, Target<Bitmap> target, DataSource dataSource, boolean b) {
                                   Palette palette = createPaletteSync(bitmap);
+                                  Preferences preferences = new Preferences();
                                   Palette.Swatch vibrant = palette.getDarkVibrantSwatch();
                                   Palette.Swatch lightVibrant = palette.getLightVibrantSwatch();
                                   if (vibrant != null) {
                                       int titleColor = vibrant.getRgb();
+
+                                      preferences.setDominantColor(getActivity(), titleColor);
 
                                       linearLayout.setBackgroundColor(titleColor);
                                       relativeLayout.setBackgroundColor(titleColor);
@@ -160,6 +164,8 @@ public class TeamDetailFragment extends Fragment {
                                       }
 
                                       Log.d("test", ""+titleColor);
+                                  } else {
+                                      preferences.setDominantColor(getActivity(), 0);
                                   }
 
                                   if (lightVibrant != null) {

@@ -27,6 +27,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.practice.myapplication.R;
+import com.practice.myapplication.model.Preferences;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +45,7 @@ public class TeamDetailFavoriteFragment extends Fragment {
     LinearLayout linearLayout;
     AppBarLayout appBarLayout;
     TabLayout tabLayout;
+    Preferences preferences;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -110,6 +112,8 @@ public class TeamDetailFavoriteFragment extends Fragment {
         tabLayout = getActivity().findViewById(R.id.tabs2);
         appBarLayout = getActivity().findViewById(R.id.toolbar_detail2);
 
+        preferences = new Preferences();
+
         tv_name.setText(name);
         tv_year.setText("Since "+year);
         tv_stadium.setText(stadium);
@@ -160,6 +164,11 @@ public class TeamDetailFavoriteFragment extends Fragment {
                                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                           getActivity().getWindow().setStatusBarColor(titleColor);
                                       }
+
+                                      preferences.setDominantColor(getActivity(), titleColor);
+
+                                  } else {
+                                      preferences.setDominantColor(getActivity(), 0);
                                   }
 
                                   if (lightVibrant != null) {

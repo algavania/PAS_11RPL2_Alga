@@ -2,6 +2,7 @@ package com.practice.myapplication.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.RecyclerView;
@@ -105,7 +107,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.UserVi
         holder.img_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("isCAB", ""+isCAB);
+                Log.d("isCAB", "" + isCAB);
                 if (!isCAB) {
                     deleteItem(position);
                 }
@@ -232,43 +234,55 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.UserVi
                     Runnable run = new Runnable() {
                         @Override
                         public void run() {
-                            for (int key : selectedItems) {
-                                deleteItem(key);
-                            }
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
+                            builder1.setMessage("Are you sure?");
+                            builder1.setCancelable(true);
+
+                            builder1.setPositiveButton(
+                                    "Yes",
+                                    (dialog, which) -> {
+                                        for (int key : selectedItems) {
+                                            deleteItem(key);
+                                        }
+                                        notifyDataSetChanged();
+
+                                        FavoriteFragment favoriteActivity = new FavoriteFragment();
+                                        favoriteActivity.tv_noFavorite = ((Activity) mContext).findViewById(R.id.tv_noFavorite);
+
+                                        if (dataList.isEmpty()) {
+                                            favoriteActivity.tv_noFavorite.setVisibility(View.VISIBLE);
+                                        } else {
+                                            favoriteActivity.tv_noFavorite.setVisibility(View.INVISIBLE);
+                                        }
+
+                                        Toast.makeText(mContext, "Team(s) has been deleted", Toast.LENGTH_SHORT).show();
+                                    });
+
+                            builder1.setNegativeButton(
+                                    "No",
+                                    (dialog, id) -> dialog.cancel());
+
+                            AlertDialog alert11 = builder1.create();
+                            alert11.show();
                         }
                     };
 
                     run.run();
-                    notifyDataSetChanged();
-
-                    FavoriteFragment favoriteActivity = new FavoriteFragment();
-                    favoriteActivity.tv_noFavorite = ((Activity) mContext).findViewById(R.id.tv_noFavorite);
-
-                    if (dataList.isEmpty()) {
-                        favoriteActivity.tv_noFavorite.setVisibility(View.VISIBLE);
-                    } else {
-                        favoriteActivity.tv_noFavorite.setVisibility(View.INVISIBLE);
-                    }
-
-                    Toast.makeText(mContext, "Team(s) has been deleted", Toast.LENGTH_SHORT).show();
 
                     mode.finish();
                     break;
                 case R.id.btn_selectAll:
                     selectedItems.clear();
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!isAll) {
-                                for (int i = 0; i < dataList.size(); i++) {
-                                    selectedItems.add(i);
-                                }
-                                isAll = true;
-                            } else {
-                                mode.finish();
+                    Runnable runnable = () -> {
+                        if (!isAll) {
+                            for (int i = 0; i < dataList.size(); i++) {
+                                selectedItems.add(i);
                             }
-                            notifyDataSetChanged();
+                            isAll = true;
+                        } else {
+                            mode.finish();
                         }
+                        notifyDataSetChanged();
                     };
                     runnable.run();
                     if (actionMode != null) {
@@ -325,20 +339,38 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.UserVi
     };
 
     private void deleteItem(int position) {
-        List<ItemProperty> storeList = realmHelper.delete(dataList.get(position));
-        dataList = storeList;
-        FavoriteFragment favoriteActivity = new FavoriteFragment();
-        favoriteActivity.tv_noFavorite = ((Activity) mContext).findViewById(R.id.tv_noFavorite);
+        Runnable runnable = () -> {
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
+            builder1.setMessage("Are you sure?");
+            builder1.setCancelable(true);
 
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, getItemCount());
+            builder1.setPositiveButton(
+                    "Yes",
+                    (dialog, which) -> {
+                        List<ItemProperty> storeList = realmHelper.delete(dataList.get(position));
+                        dataList = storeList;
+                        FavoriteFragment favoriteActivity = new FavoriteFragment();
+                        favoriteActivity.tv_noFavorite = ((Activity) mContext).findViewById(R.id.tv_noFavorite);
 
-        dataListFull = new ArrayList<>(dataList);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, getItemCount());
 
-        if (dataList.isEmpty()) {
-            favoriteActivity.tv_noFavorite.setVisibility(View.VISIBLE);
-        } else {
-            favoriteActivity.tv_noFavorite.setVisibility(View.INVISIBLE);
-        }
+                        dataListFull = new ArrayList<>(dataList);
+
+                        if (dataList.isEmpty()) {
+                            favoriteActivity.tv_noFavorite.setVisibility(View.VISIBLE);
+                        } else {
+                            favoriteActivity.tv_noFavorite.setVisibility(View.INVISIBLE);
+                        }
+                    });
+
+            builder1.setNegativeButton(
+                    "No",
+                    (dialog, id) -> dialog.cancel());
+
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+        };
+        runnable.run();
     }
 }

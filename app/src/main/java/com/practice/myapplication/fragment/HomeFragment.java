@@ -57,6 +57,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
@@ -98,6 +99,14 @@ public class HomeFragment extends Fragment {
     RealmHelper realmHelper;
 
     DatabaseReference databaseReference;
+
+
+    ArrayList<String> eventArray = new ArrayList<>();
+    ArrayList<String> homeTeamArray = new ArrayList<>();
+    ArrayList<String> imageAwayArray = new ArrayList<>();
+    ArrayList<String> imageHomeArray = new ArrayList<>();
+    ArrayList<String> awayTeamArray = new ArrayList<>();
+    ArrayList<String> dateArray = new ArrayList<>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -246,6 +255,7 @@ public class HomeFragment extends Fragment {
                             JSONArray resultArray = response.getJSONArray("teams");
                             for (int i = 0; i < resultArray.length(); i++) {
                                 JSONObject resultObj = resultArray.getJSONObject(i);
+
                                 imageUrl = resultObj.getString("strTeamBadge");
                                 title = resultObj.getString("strTeam");
                                 description = resultObj.getString("strDescriptionEN");
@@ -260,6 +270,7 @@ public class HomeFragment extends Fragment {
                                     arrayList.get(i).setFavorite(true);
                                 }
                             }
+
                             adapter = new HomeTeamAdapter(getActivity(), arrayList);
                             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
                             recyclerView.setHasFixedSize(true);
@@ -277,7 +288,6 @@ public class HomeFragment extends Fragment {
                                 intent.putExtra("stadiumDesc", arrayList.get(position).getStadiumDesc());
                                 intent.putExtra("stadiumImage", arrayList.get(position).getStadiumImage());
                                 intent.putExtra("stadiumLocation", arrayList.get(position).getStadiumLocation());
-                                intent.putExtra("id", arrayList.get(position).getId());
                                 intent.putExtra("description", arrayList.get(position).getDescription());
                                 intent.putExtra("imageUrl", arrayList.get(position).getImageUrl());
                                 intent.putExtra("stadium", arrayList.get(position).getStadiumName());
@@ -314,6 +324,9 @@ public class HomeFragment extends Fragment {
                                 eventName = resultObj.getString("strEvent");
                                 date = resultObj.getString("dateEvent");
 
+                                eventArray.add(eventName);
+                                dateArray.add(date);
+
                                 String inputPattern = "yyyy-MM-dd";
                                 String outputPattern = "d MMMM yyyy";
                                 SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
@@ -329,8 +342,8 @@ public class HomeFragment extends Fragment {
 
                                 id_home = resultObj.getString("idHomeTeam");
                                 id_away = resultObj.getString("idAwayTeam");
-                                setImageTeam(eventName, date, id_home, true);
-                                setImageTeam(eventName, date, id_away, false);
+                                setImageTeam(id_home, true);
+                                setImageTeam(id_away, false);
                             }
                         } catch (Exception e) {
                             Log.d("Error: ", e.toString());
@@ -345,7 +358,7 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-    private void setImageTeam(String eventName, String date, String id, boolean isHome) {
+    private void setImageTeam(String id, boolean isHome) {
         progressBar_two.setVisibility(View.VISIBLE);
         AndroidNetworking.get("https://www.thesportsdb.com/api/v1/json/1/lookupteam.php?id=" + id)
                 .build()
@@ -360,26 +373,18 @@ public class HomeFragment extends Fragment {
                                 if (isHome) {
                                     img_home = resultObj.getString("strTeamBadge");
                                     home = resultObj.getString("strTeam");
+                                    imageHomeArray.add(img_home);
+                                    homeTeamArray.add(home);
                                 } else {
                                     img_away = resultObj.getString("strTeamBadge");
                                     away = resultObj.getString("strTeam");
-                                }
-
-                                String name = home + " vs " + away;
-
-                                if (eventName.equals(name)) {
-                                    matchList.add(new MatchProperty(eventName, date, img_home, img_away));
+                                    imageAwayArray.add(img_away);
+                                    awayTeamArray.add(away);
                                 }
                             }
-                            matchAdapter = new HomeMatchAdapter(getActivity(), matchList);
-                            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                            matchRv.setHasFixedSize(true);
-                            matchRv.setItemViewCacheSize(20);
-                            matchRv.setDrawingCacheEnabled(true);
-                            matchRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-                            matchRv.setLayoutManager(layoutManager);
-                            matchRv.setAdapter(matchAdapter);
-
+                            if (imageAwayArray.size() == 15) {
+                                setMatch();
+                            }
                         } catch (Exception e) {
                             progressBar_two.setVisibility(View.INVISIBLE);
                             Log.d("Error: ", e.toString());
@@ -392,6 +397,23 @@ public class HomeFragment extends Fragment {
                         Toast.makeText(getActivity(), "Something error", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void setMatch() {
+        progressBar_two.setVisibility(View.VISIBLE);
+        for (int i = 0; i < eventArray.size(); i++) {
+            matchList.add(new MatchProperty(eventArray.get(i), dateArray.get(i), imageHomeArray.get(i), imageAwayArray.get(i)));
+        }
+
+        matchAdapter = new HomeMatchAdapter(getActivity(), matchList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        matchRv.setHasFixedSize(true);
+        matchRv.setItemViewCacheSize(20);
+        matchRv.setDrawingCacheEnabled(true);
+        matchRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        matchRv.setLayoutManager(layoutManager);
+        matchRv.setAdapter(matchAdapter);
+        progressBar_two.setVisibility(View.INVISIBLE);
     }
 
     private void facebookLogin() {
