@@ -1,5 +1,6 @@
 package com.practice.myapplication.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -134,6 +135,7 @@ public class HomeFragment extends Fragment {
         return fragment;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

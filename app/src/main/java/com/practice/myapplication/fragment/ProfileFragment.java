@@ -1,5 +1,6 @@
 package com.practice.myapplication.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -97,6 +98,7 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
