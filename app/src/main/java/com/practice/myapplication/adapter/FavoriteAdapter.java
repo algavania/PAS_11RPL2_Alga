@@ -109,7 +109,23 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.UserVi
             public void onClick(View view) {
                 Log.d("isCAB", "" + isCAB);
                 if (!isCAB) {
-                    deleteItem(position);
+                    AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                    alertDialog.setTitle("Delete");
+                    alertDialog.setMessage("Are you sure?");
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deleteItem(position);
+
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDialog.show();
                 }
             }
         });
@@ -225,49 +241,45 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.UserVi
         public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.btn_delete:
+                    AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                    alertDialog.setTitle("Delete");
+                    alertDialog.setMessage("Are you sure?");
 
-                    // We reverse the order because if we don't do that, the smaller ID will be removed first
-                    // and it'll change the other IDs.
-                    Comparator c = Collections.reverseOrder();
-                    Collections.sort(selectedItems, c);
+                    // Declaring a final copy of selectedItems Array because we can't access non-final variable in inner class (onClick dialog)
+                    final ArrayList<Integer> selectedArrayNew = new ArrayList<>(selectedItems);
 
-                    Runnable run = new Runnable() {
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // We reverse the order because if we don't do that, the smaller ID will be removed first
+                                    // and it'll change the other IDs.
+                                    Comparator c = Collections.reverseOrder();
+                                    Collections.sort(selectedArrayNew, c);
+                                    for (int key : selectedArrayNew) {
+                                        Log.d("key", "" + key);
+                                        deleteItem(key);
+                                    }
+                                    notifyDataSetChanged();
+
+                                    FavoriteFragment favoriteActivity = new FavoriteFragment();
+                                    favoriteActivity.tv_noFavorite = ((Activity) mContext).findViewById(R.id.tv_noFavorite);
+
+                                    if (dataList.isEmpty()) {
+                                        favoriteActivity.tv_noFavorite.setVisibility(View.VISIBLE);
+                                    } else {
+                                        favoriteActivity.tv_noFavorite.setVisibility(View.INVISIBLE);
+                                    }
+
+                                    Toast.makeText(mContext, "Team(s) has been deleted", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
                         @Override
-                        public void run() {
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
-                            builder1.setMessage("Are you sure?");
-                            builder1.setCancelable(true);
-
-                            builder1.setPositiveButton(
-                                    "Yes",
-                                    (dialog, which) -> {
-                                        for (int key : selectedItems) {
-                                            deleteItem(key);
-                                        }
-                                        notifyDataSetChanged();
-
-                                        FavoriteFragment favoriteActivity = new FavoriteFragment();
-                                        favoriteActivity.tv_noFavorite = ((Activity) mContext).findViewById(R.id.tv_noFavorite);
-
-                                        if (dataList.isEmpty()) {
-                                            favoriteActivity.tv_noFavorite.setVisibility(View.VISIBLE);
-                                        } else {
-                                            favoriteActivity.tv_noFavorite.setVisibility(View.INVISIBLE);
-                                        }
-
-                                        Toast.makeText(mContext, "Team(s) has been deleted", Toast.LENGTH_SHORT).show();
-                                    });
-
-                            builder1.setNegativeButton(
-                                    "No",
-                                    (dialog, id) -> dialog.cancel());
-
-                            AlertDialog alert11 = builder1.create();
-                            alert11.show();
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
                         }
-                    };
-
-                    run.run();
+                    });
+                    alertDialog.show();
 
                     mode.finish();
                     break;
@@ -340,36 +352,21 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.UserVi
 
     private void deleteItem(int position) {
         Runnable runnable = () -> {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
-            builder1.setMessage("Are you sure?");
-            builder1.setCancelable(true);
+            List<ItemProperty> storeList = realmHelper.delete(dataList.get(position));
+            dataList = storeList;
+            FavoriteFragment favoriteActivity = new FavoriteFragment();
+            favoriteActivity.tv_noFavorite = ((Activity) mContext).findViewById(R.id.tv_noFavorite);
 
-            builder1.setPositiveButton(
-                    "Yes",
-                    (dialog, which) -> {
-                        List<ItemProperty> storeList = realmHelper.delete(dataList.get(position));
-                        dataList = storeList;
-                        FavoriteFragment favoriteActivity = new FavoriteFragment();
-                        favoriteActivity.tv_noFavorite = ((Activity) mContext).findViewById(R.id.tv_noFavorite);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, getItemCount());
 
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, getItemCount());
+            dataListFull = new ArrayList<>(dataList);
 
-                        dataListFull = new ArrayList<>(dataList);
-
-                        if (dataList.isEmpty()) {
-                            favoriteActivity.tv_noFavorite.setVisibility(View.VISIBLE);
-                        } else {
-                            favoriteActivity.tv_noFavorite.setVisibility(View.INVISIBLE);
-                        }
-                    });
-
-            builder1.setNegativeButton(
-                    "No",
-                    (dialog, id) -> dialog.cancel());
-
-            AlertDialog alert11 = builder1.create();
-            alert11.show();
+            if (dataList.isEmpty()) {
+                favoriteActivity.tv_noFavorite.setVisibility(View.VISIBLE);
+            } else {
+                favoriteActivity.tv_noFavorite.setVisibility(View.INVISIBLE);
+            }
         };
         runnable.run();
     }
